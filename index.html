@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scusificio Italiano</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+        * { font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-white {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px) rotate(-1deg); }
+            75% { transform: translateX(5px) rotate(1deg); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(255,255,255,0.3); }
+            50% { border-color: rgba(255,255,255,0.8); }
+        }
+
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .float { animation: float 3s ease-in-out infinite; }
+        .shake { animation: shake 0.5s ease-in-out; }
+        .pop { animation: pop 0.4s ease-out forwards; }
+        .pulse-border { animation: pulse-border 2s ease-in-out infinite; }
+
+        .category-btn {
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .category-btn.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px white, 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .excuse-card {
+            transition: all 0.3s ease;
+        }
+
+        .excuse-card:hover {
+            transform: translateY(-2px);
+        }
+
+        select option {
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+
+        .credibility-bar, .risk-bar {
+            transition: width 0.8s ease-out;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti 3s linear forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .severity-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+        }
+    </style>
+</head>
+<body class="text-white p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="text-6xl mb-4 float">🏭</div>
+            <h1 class="text-4xl md:text-5xl font-black mb-2">
+                SCUSIFICIO ITALIANO
+            </h1>
+            <p class="text-white/80 text-lg">La fabbrica delle scuse perfette dal 1861</p>
+            <div class="mt-4 inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm">
+                <i class="fas fa-industry"></i>
+                <span id="excuses-generated">0</span> scuse prodotte artigianalmente
+            </div>
+        </header>
+
+        <!-- Situation Selector -->
+        <div class="glass rounded-3xl p-6 md:p-8 mb-8">
+            <h2 class="text-xl font-bold text-center mb-6">
+                <i class="fas fa-question-circle mr-2"></i>
+                Per cosa ti serve una scusa?
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6" id="category-grid">
+                <!-- Categories rendered here -->
+            </div>
+
+            <!-- Severity Selector -->
+            <div class="mt-6">
+                <label class="block text-white/80 text-sm mb-3 text-center">
+                    <i class="fas fa-thermometer-half mr-1"></i>
+                    Quanto è grave la situazione?
+                </label>
+                <div class="flex justify-center gap-2 flex-wrap" id="severity-selector">
+                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20" data-severity="lieve">
+                        😅 Lieve
+                    </button>
+                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20 selected bg-white/30" data-severity="media">
+                        😬 Media
+                    </button>
+                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20" data-severity="grave">
+                        😰 Grave
+                    </button>
+                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20" data-severity="catastrofica">
+                        💀 Catastrofica
+                    </button>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center mt-8">
+                <button id="generate-btn" class="bg-white text-purple-600 font-bold py-4 px-12 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg text-lg disabled:opacity-50">
+                    <i class="fas fa-magic mr-2"></i>
+                    GENERA SCUSA
+                </button>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result-container" class="hidden">
+            <div class="glass-white rounded-3xl p-6 md:p-8 mb-6 text-gray-800 pop">
+                <!-- Category Badge -->
+                <div class="flex items-center justify-between mb-4">
+                    <span id="result-category-badge" class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm font-medium">
+                        📱 Categoria
+                    </span>
+                    <span id="result-severity-badge" class="severity-badge bg-yellow-100 text-yellow-700 rounded-full font-medium">
+                        😬 Media
+                    </span>
+                </div>
+
+                <!-- The Excuse -->
+                <div class="mb-6">
+                    <p class="text-gray-500 text-sm mb-2">La tua scusa pronta all'uso:</p>
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border-2 border-purple-200">
+                        <p id="excuse-text" class="text-xl md:text-2xl font-medium text-gray-800 leading-relaxed">
+                            "La scusa apparirà qui..."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600 text-sm flex items-center gap-1">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                Credibilità
+                            </span>
+                            <span id="credibility-value" class="font-bold text-green-600">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div id="credibility-bar" class="credibility-bar bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-600 text-sm flex items-center gap-1">
+                                <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                                Rischio Sgamo
+                            </span>
+                            <span id="risk-value" class="font-bold text-orange-600">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div id="risk-bar" class="risk-bar bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 h-3 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="bg-purple-50 rounded-xl p-4 mb-6 border border-purple-200">
+                    <p class="text-purple-700 text-sm flex items-start gap-2">
+                        <i class="fas fa-lightbulb mt-1"></i>
+                        <span id="tip-text">Consiglio per renderla più credibile...</span>
+                    </p>
+                </div>
+
+                <!-- Pro Move -->
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 mb-6 border border-amber-200">
+                    <p class="text-amber-800 text-sm font-medium mb-1">
+                        <i class="fas fa-crown mr-1"></i> Pro Move:
+                    </p>
+                    <p id="pro-move-text" class="text-amber-700 text-sm">
+                        Un suggerimento avanzato...
+                    </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button id="copy-btn" class="copy-btn flex items-center gap-2 bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-all hover:bg-purple-700">
+                        <i class="fas fa-copy"></i>
+                        Copia
+                    </button>
+                    <button id="share-btn" class="flex items-center gap-2 bg-pink-500 text-white font-bold py-3 px-6 rounded-xl transition-all hover:bg-pink-600">
+                        <i class="fas fa-share-alt"></i>
+                        Condividi
+                    </button>
+                    <button id="another-btn" class="flex items-center gap-2 bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all hover:bg-gray-300">
+                        <i class="fas fa-sync-alt"></i>
+                        Un'altra
+                    </button>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="text-center mb-6">
+                <p class="text-white/60 text-xs">
+                    ⚠️ Lo Scusificio non si assume responsabilità per scuse non credute, relazioni rovinate, o licenziamenti. Usare con cautela e creatività.
+                </p>
+            </div>
+        </div>
+
+        <!-- Favorites -->
+        <div class="glass rounded-3xl p-6 mb-8">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-star text-yellow-400"></i>
+                Le Più Usate Oggi
+            </h2>
+            <div id="popular-list" class="space-y-2">
+                <!-- Popular excuses here -->
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="glass rounded-3xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold flex items-center gap-2">
+                    <i class="fas fa-history"></i>
+                    Le Tue Scuse Recenti
+                </h2>
+                <button id="clear-history" class="text-white/50 hover:text-white text-sm transition-colors">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            <div id="history-list" class="space-y-2 max-h-48 overflow-y-auto">
+                <p class="text-white/50 text-sm text-center py-4">Nessuna scusa ancora. Sei una persona onesta? 🤔</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-8 text-white/50 text-sm">
+        Prodotto con ingegno e zero rimorsi dal 1861 🇮🇹
+    </footer>
+
+    <script>
+        // ==================== DATA ====================
+        const CATEGORIES = [
+            { id: 'ritardo', name: 'Ritardo', emoji: '⏰', color: 'from-red-500 to-orange-500' },
+            { id: 'whatsapp', name: 'Non rispondere', emoji: '📱', color: 'from-green-500 to-teal-500' },
+            { id: 'evento', name: 'Saltare evento', emoji: '🎉', color: 'from-purple-500 to-pink-500' },
+            { id: 'lavoro', name: 'Assenza lavoro', emoji: '💼', color: 'from-blue-500 to-indigo-500' },
+            { id: 'palestra', name: 'Niente palestra', emoji: '🏋️', color: 'from-yellow-500 to-orange-500' },
+            { id: 'famiglia', name: 'Cena famiglia', emoji: '👨‍👩‍👧', color: 'from-pink-500 to-rose-500' },
+            { id: 'compiti', name: 'Compiti/Studio', emoji: '📚', color: 'from-cyan-500 to-blue-500' },
+            { id: 'appuntamento', name: 'Disdire appuntamento', emoji: '📅', color: 'from-violet-500 to-purple-500' }
+        ];
+
+        const EXCUSES = {
+            ritardo: {
+                lieve: [
+                    { text: "C'era un traffico allucinante, sembrava Ferragosto", credibility: 85, risk: 20, tip: "Aggiungi dettagli specifici su dove era il traffico", proMove: "Manda una foto dello schermo di Google Maps con traffico rosso (anche vecchia)" },
+                    { text: "Ho dovuto tornare indietro, avevo dimenticato il telefono", credibility: 80, risk: 25, tip: "Funziona meglio se arrivi effettivamente col telefono in mano", proMove: "Fai finta di controllarlo ossessivamente appena arrivi" },
+                    { text: "Non trovavo le chiavi della macchina, erano finite sotto il divano", credibility: 75, risk: 30, tip: "Sembra più vero se sembri ancora leggermente stressato", proMove: "Agita le chiavi quando arrivi come prova" }
+                ],
+                media: [
+                    { text: "Mi hanno bucato una gomma, ho dovuto aspettare il carro attrezzi", credibility: 70, risk: 35, tip: "Preparati a descrivere dove esattamente", proMove: "Sporcati leggermente le mani prima di arrivare" },
+                    { text: "C'è stato un blackout a casa e non ha suonato la sveglia", credibility: 65, risk: 40, tip: "Funziona solo se non usi il telefono come sveglia", proMove: "Controlla se ci sono stati blackout reali nella zona (succede)" },
+                    { text: "Ho trovato un gatto ferito per strada, l'ho portato dal veterinario", credibility: 60, risk: 45, tip: "Preparati a sembrare emotivamente coinvolto", proMove: "Cerca una foto di gatto random da mostrare 'guardate com'era ridotto'" }
+                ],
+                grave: [
+                    { text: "Sono rimasto bloccato in ascensore per 40 minuti", credibility: 55, risk: 55, tip: "Sembra più credibile se vivi in un palazzo vecchio", proMove: "Fai una storia Instagram mentre 'aspetti' (prima di uscire di casa)" },
+                    { text: "Mio cugino ha avuto un incidente, sono dovuto passare in ospedale", credibility: 50, risk: 60, tip: "Usa un cugino lontano che nessuno conosce", proMove: "Sii vago sui dettagli, 'non voglio parlarne' funziona" },
+                    { text: "C'è stata una fuga di gas nel palazzo, evacuazione forzata", credibility: 45, risk: 65, tip: "Verificabile se qualcuno abita vicino", proMove: "Aggiungi 'ancora mi tremano le mani'" }
+                ],
+                catastrofica: [
+                    { text: "La metropolitana si è fermata per un'emergenza medica, siamo rimasti fermi un'ora", credibility: 70, risk: 40, tip: "Verificabile sui social, usala solo se è successo davvero di recente", proMove: "Cerca un tweet di ATM/metropolitana recente da mostrare" },
+                    { text: "Ho trovato un portafoglio per terra, ho dovuto portarlo ai carabinieri", credibility: 40, risk: 70, tip: "Nobile ma sospetta, usala con parsimonia", proMove: "Se ti chiedono ricevuta, di' che non te l'hanno data" }
+                ]
+            },
+            whatsapp: {
+                lieve: [
+                    { text: "Scusa, avevo il telefono in modalità non disturbare", credibility: 90, risk: 15, tip: "Usala massimo una volta a settimana", proMove: "Metti davvero il DND ogni tanto per credibilità futura" },
+                    { text: "Avevo finito i giga, ho visto il messaggio solo ora col WiFi", credibility: 85, risk: 20, tip: "Funziona meglio a fine mese", proMove: "Lamentati dei piani telefonici costosi" },
+                    { text: "Il telefono era in carica nell'altra stanza", credibility: 80, risk: 25, tip: "Classica ma sempre efficace", proMove: "Rispondi con entusiasmo eccessivo per compensare" }
+                ],
+                media: [
+                    { text: "Giuro che ho risposto! Non ti è arrivato? Odio WhatsApp", credibility: 65, risk: 40, tip: "Funziona una volta sola per persona", proMove: "Riscrivi immediatamente 'quello che avevi scritto prima'" },
+                    { text: "Ero in una zona senza campo, tipo bunker", credibility: 60, risk: 45, tip: "Specifica dove, ma non troppo", proMove: "Aggiungi 'devo cambiare operatore'" },
+                    { text: "Mi si era bloccato WhatsApp, ho dovuto reinstallarlo", credibility: 55, risk: 50, tip: "Tecnicamente possibile", proMove: "Lamentati che hai perso tutti gli sticker" }
+                ],
+                grave: [
+                    { text: "Mi hanno rubato il telefono, l'ho riavuto solo oggi", credibility: 40, risk: 65, tip: "Richiede commitment, dovrai mantenere la storia", proMove: "Cambia davvero foto profilo come 'nuovo inizio'" },
+                    { text: "Sono stato malissimo, non ho toccato il telefono per giorni", credibility: 50, risk: 55, tip: "Sii vago sulla malattia", proMove: "Voce leggermente rauca quando rispondi" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto un esaurimento nervoso, sono stato offline per salute mentale", credibility: 70, risk: 35, tip: "Nessuno osa questionare la salute mentale", proMove: "Condividi un post sulla digital detox" }
+                ]
+            },
+            evento: {
+                lieve: [
+                    { text: "Mi è venuto un mal di testa fortissimo, non riesco ad uscire", credibility: 85, risk: 20, tip: "Non postare stories quella sera", proMove: "Manda un messaggio il giorno dopo chiedendo com'è andata" },
+                    { text: "Mi sento la febbre, meglio non rischiare di contagiare tutti", credibility: 80, risk: 25, tip: "Post-covid questa funziona sempre", proMove: "Il giorno dopo di' che ti sei svegliato benissimo, era solo stanchezza" },
+                    { text: "Ho avuto un imprevisto in famiglia, nulla di grave ma devo restare", credibility: 75, risk: 30, tip: "Vago ma efficace", proMove: "Non dare dettagli, l'aria di mistero aiuta" }
+                ],
+                media: [
+                    { text: "Il mio cane sta male, devo portarlo dal veterinario d'urgenza", credibility: 70, risk: 35, tip: "Funziona solo se hai un cane", proMove: "Posta una foto del cane 'in ripresa' il giorno dopo" },
+                    { text: "Mi si è allagato il bagno, sto aspettando l'idraulico", credibility: 65, risk: 40, tip: "Dettaglio specifico che convince", proMove: "Lamentati del conto dell'idraulico per settimane" },
+                    { text: "Ho la macchina in panne, sono bloccato", credibility: 60, risk: 45, tip: "Funziona se l'evento è lontano da casa tua", proMove: "Aggiungi 'e il carro attrezzi tarda'" }
+                ],
+                grave: [
+                    { text: "Ho avuto un attacco di panico, non me la sento di uscire", credibility: 75, risk: 30, tip: "Nessuno può dimostrare il contrario", proMove: "Ringrazia per la comprensione, dimostra vulnerabilità" },
+                    { text: "Mia nonna sta male, devo andare da lei", credibility: 70, risk: 40, tip: "La nonna funziona sempre, ma non abusarne", proMove: "Mai inventare malattie gravi, karma pericoloso" }
+                ],
+                catastrofica: [
+                    { text: "Ho scoperto che il mio ex/la mia ex sarà lì, non posso venire", credibility: 60, risk: 50, tip: "Onestà disarmante", proMove: "Racconta una storia drammatica se chiedono" }
+                ]
+            },
+            lavoro: {
+                lieve: [
+                    { text: "Ho un appuntamento medico che non posso spostare", credibility: 90, risk: 15, tip: "Non dare dettagli sulla visita", proMove: "Prenota davvero qualcosa (dentista?) per avere la scusa pronta" },
+                    { text: "Devo aspettare il tecnico per un guasto urgente a casa", credibility: 85, risk: 20, tip: "Caldaia, internet, elettricità - scegli", proMove: "Lamentati la mattina prima su WhatsApp del guasto" },
+                    { text: "Mi sono svegliato con mal di stomaco fortissimo", credibility: 80, risk: 25, tip: "Nessuno vuole dettagli, stai tranquillo", proMove: "Torna al lavoro pallido (trucco o sonno perso)" }
+                ],
+                media: [
+                    { text: "Ho la febbre alta, meglio non venire e contagiare tutti", credibility: 85, risk: 25, tip: "Post-covid è diventata rispettatissima", proMove: "Manda foto del termometro (modifica temperatura con app)" },
+                    { text: "Ho avuto un incidente stradale minore, sto aspettando la polizia per il CID", credibility: 60, risk: 50, tip: "Richiede commitment, potresti dover inventare dettagli", proMove: "Fai foto della macchina da angolature strane" },
+                    { text: "Mio figlio/nipote sta male, devo restare con lui", credibility: 75, risk: 35, tip: "Solo se hai figli/nipoti", proMove: "Chi può dire di no a un bambino malato?" }
+                ],
+                grave: [
+                    { text: "Ho un problema familiare serio, ho bisogno di un giorno personale", credibility: 70, risk: 40, tip: "Non elaborare, l'aria seria basta", proMove: "Al ritorno, sii vago: 'grazie per la comprensione, si è risolto'" },
+                    { text: "Ho avuto una reazione allergica, sono gonfio come un pallone", credibility: 65, risk: 45, tip: "Specifica qualcosa di credibile (frutti di mare?)", proMove: "Inventati un'allergia plausibile da mantenere" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto un principio di esaurimento, il medico mi ha imposto riposo", credibility: 70, risk: 45, tip: "Potente ma da usare con estrema cautela", proMove: "Al ritorno parla di 'work-life balance'" }
+                ]
+            },
+            palestra: {
+                lieve: [
+                    { text: "Ho un dolorino strano alla schiena, meglio non rischiare", credibility: 90, risk: 10, tip: "Sempre valida, chi può dimostrare il contrario?", proMove: "Fai stretching a casa e postalo (conta come allenamento)" },
+                    { text: "Sono troppo stanco/a, sarebbe controproducente", credibility: 85, risk: 15, tip: "Tecnicamente vero, il recupero è importante", proMove: "Di' che farai una sessione doppia domani (poi non farla)" },
+                    { text: "Ho mangiato troppo pesante, andrei a vomitare", credibility: 80, risk: 20, tip: "Nessuno vuole vederti vomitare", proMove: "Colpa del pranzo di lavoro/famiglia" }
+                ],
+                media: [
+                    { text: "Mi si sono rotti i leggings/le scarpe da ginnastica", credibility: 70, risk: 30, tip: "Richiede di comprarne di nuovi per la prossima volta", proMove: "Posta foto delle scarpe 'rotte'" },
+                    { text: "La palestra è chiusa per sanificazione", credibility: 65, risk: 40, tip: "Verificabile, usa con cautela", proMove: "Cerca se la tua palestra ha mai postato una chiusura simile" },
+                    { text: "Ho il ciclo e crampi terribili", credibility: 95, risk: 5, tip: "Per chi ha le mestruazioni: scusa infallibile", proMove: "Nessuno osa questionare" }
+                ],
+                grave: [
+                    { text: "Ho un infortunio, il fisioterapista mi ha detto di stare fermo", credibility: 75, risk: 35, tip: "Mantieni la storia per almeno una settimana", proMove: "Zoppica leggermente quando ti vedono" },
+                    { text: "Ho il COVID/influenza, sono in isolamento", credibility: 85, risk: 25, tip: "Ti copre per 5-7 giorni", proMove: "Sparisci dai social per renderla credibile" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto un attacco di panico l'ultima volta in palestra", credibility: 80, risk: 30, tip: "Nessuno può questionare la salute mentale", proMove: "Parla di come stai 'lavorando su te stesso'" }
+                ]
+            },
+            famiglia: {
+                lieve: [
+                    { text: "Ho già un impegno che non posso spostare, scusate", credibility: 75, risk: 30, tip: "Vago ma deciso", proMove: "Non dare dettagli, sembreresti sulla difensiva" },
+                    { text: "Ho preso un'intossicazione alimentare, non posso allontanarmi dal bagno", credibility: 80, risk: 25, tip: "Nessuno vuole dettagli, fidati", proMove: "Manda un messaggio di follow-up il giorno dopo" },
+                    { text: "Il mio coinquilino/partner sta male, devo restare con lui/lei", credibility: 70, risk: 35, tip: "Funziona se la famiglia non lo/la conosce bene", proMove: "Sembrerà che tu sia premuroso/a" }
+                ],
+                media: [
+                    { text: "Ho una deadline di lavoro impossibile, mi hanno obbligato a lavorare", credibility: 65, risk: 45, tip: "La mamma capirà (forse)", proMove: "Lamentati del tuo capo per renderla credibile" },
+                    { text: "Ho la macchina dal meccanico, non ho come muovermi", credibility: 60, risk: 50, tip: "Funziona se abiti lontano", proMove: "Proponi di fare videocall invece (tanto diranno di no)" },
+                    { text: "Ho promesso a un amico/a di aiutarlo/a con il trasloco", credibility: 55, risk: 55, tip: "Richiede un amico complice", proMove: "Fai foto di scatoloni random" }
+                ],
+                grave: [
+                    { text: "Non me la sento emotivamente, ho bisogno di stare solo/a", credibility: 70, risk: 50, tip: "Coraggiosa ma rispettata", proMove: "La mamma ti chiamerà preoccupata, preparati" },
+                    { text: "Ho avuto una brutta discussione col partner, devo stare con lui/lei", credibility: 65, risk: 55, tip: "Funziona se hai un partner", proMove: "Non dare dettagli, sembrerai riservato/a" }
+                ],
+                catastrofica: [
+                    { text: "Ho un problema personale serio di cui non voglio parlare", credibility: 60, risk: 60, tip: "Alta tensione emotiva, usala rarissimamente", proMove: "Preparati alle chiamate preoccupate" }
+                ]
+            },
+            compiti: {
+                lieve: [
+                    { text: "Il computer si è spento e ho perso tutto il lavoro", credibility: 70, risk: 35, tip: "Classica ma sempre valida", proMove: "Lamentati del 'backup che non ha funzionato'" },
+                    { text: "Ho avuto problemi con internet tutto il giorno", credibility: 75, risk: 30, tip: "Verificabile teoricamente, ma chi lo fa?", proMove: "Scrivi al prof/capo dalla connessione 'finalmente tornata'" },
+                    { text: "Non avevo capito la consegna, posso avere una proroga?", credibility: 80, risk: 25, tip: "L'onestà parziale funziona", proMove: "Fai una domanda specifica per sembrare confuso/a davvero" }
+                ],
+                media: [
+                    { text: "Il file si è corrotto, non riesco più ad aprirlo", credibility: 60, risk: 45, tip: "Funziona una volta sola", proMove: "Manda un file corrotto come 'prova' (facile da creare)" },
+                    { text: "Sono stato male tutta la settimana, non sono riuscito a concentrarmi", credibility: 65, risk: 40, tip: "Vago ma empatico", proMove: "Sembri leggermente provato/a" },
+                    { text: "Ho avuto un lutto in famiglia, ero fuori città", credibility: 50, risk: 60, tip: "Karma pericoloso, usa con estrema cautela", proMove: "MAI inventare lutti, seriamente" }
+                ],
+                grave: [
+                    { text: "Ho avuto un attacco di ansia e non riuscivo a lavorare", credibility: 75, risk: 35, tip: "Sempre più accettata come scusa", proMove: "Parla di quanto prendi sul serio il lavoro 'forse troppo'" },
+                    { text: "Il mio coinquilino ha cancellato tutto per sbaglio", credibility: 45, risk: 65, tip: "Incredibile ma tecnicamente possibile", proMove: "Sembrare arrabbiato/a col coinquilino aiuta" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto un blocco creativo totale, preferisco consegnare qualcosa di qualità in ritardo", credibility: 70, risk: 50, tip: "Audace ma rispettata se poi consegni bene", proMove: "Poi consegna davvero qualcosa di decente" }
+                ]
+            },
+            appuntamento: {
+                lieve: [
+                    { text: "Mi è venuto qualcosa, possiamo spostare?", credibility: 85, risk: 20, tip: "Vago e gentile", proMove: "Proponi una nuova data immediatamente" },
+                    { text: "Ho avuto un imprevisto di lavoro dell'ultimo minuto", credibility: 80, risk: 25, tip: "Il lavoro è sempre una scusa accettabile", proMove: "Scusati molto e offri alternativa" },
+                    { text: "Non mi sento benissimo, preferisco non rischiare di contagiarti", credibility: 85, risk: 20, tip: "Altruistica e credibile", proMove: "Proponi videocall invece se appropriato" }
+                ],
+                media: [
+                    { text: "Ho avuto un casino con i trasporti, non riesco ad arrivare in tempo", credibility: 70, risk: 35, tip: "Manda messaggio 'in anticipo' quando sei già in ritardo", proMove: "Scusati profusamente e offri di pagare qualcosa la prossima" },
+                    { text: "Un familiare sta male, devo andare da lui/lei", credibility: 75, risk: 35, tip: "Sii vago su chi", proMove: "Sembri dispiaciuto/a ma determinato/a" },
+                    { text: "Il mio cane/gatto ha avuto un problema, devo restare", credibility: 65, risk: 45, tip: "Funziona se hai animali", proMove: "Manda foto dell'animale 'ora sta meglio'" }
+                ],
+                grave: [
+                    { text: "Sono onesto/a: non me la sento oggi, possiamo riprogrammare?", credibility: 90, risk: 30, tip: "L'onestà è disarmante", proMove: "Funziona sorprendentemente bene" },
+                    { text: "Ho avuto una giornata emotivamente pesante, non sarei buona compagnia", credibility: 80, risk: 35, tip: "Vulnerabile e onesta", proMove: "Le persone apprezzano l'onestà emotiva" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto un'emergenza personale seria, ti prego di capire", credibility: 65, risk: 55, tip: "Da usare solo in casi veri o quasi-veri", proMove: "Non dare dettagli, il mistero protegge" }
+                ]
+            }
+        };
+
+        const POPULAR_EXCUSES = [
+            { text: "Avevo il telefono in silenzioso", category: "📱 Non rispondere", uses: 847 },
+            { text: "C'era un traffico assurdo", category: "⏰ Ritardo", uses: 723 },
+            { text: "Ho mal di testa fortissimo", category: "🎉 Evento", uses: 612 },
+            { text: "Ho la schiena bloccata", category: "🏋️ Palestra", uses: 589 },
+            { text: "Ho una deadline di lavoro", category: "👨‍👩‍👧 Famiglia", uses: 456 }
+        ];
+
+        // ==================== STATE ====================
+        let state = {
+            selectedCategory: null,
+            selectedSeverity: 'media',
+            excusesGenerated: 0,
+            history: []
+        };
+
+        // ==================== STORAGE ====================
+        function saveState() {
+            localStorage.setItem('scusificio', JSON.stringify({
+                excusesGenerated: state.excusesGenerated,
+                history: state.history
+            }));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('scusificio');
+            if (saved) {
+                const data = JSON.parse(saved);
+                state.excusesGenerated = data.excusesGenerated || 0;
+                state.history = data.history || [];
+            }
+        }
+
+        // ==================== HELPERS ====================
+        function randomFrom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#ffd700', '#ff6b6b'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = randomFrom(colors);
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3500);
+            }
+        }
+
+        // ==================== UI ====================
+        function renderCategories() {
+            const grid = document.getElementById('category-grid');
+            grid.innerHTML = CATEGORIES.map(cat => `
+                <button class="category-btn glass rounded-xl p-4 text-center ${state.selectedCategory === cat.id ? 'selected' : ''}" data-category="${cat.id}">
+                    <div class="text-3xl mb-2">${cat.emoji}</div>
+                    <div class="text-sm font-medium">${cat.name}</div>
+                </button>
+            `).join('');
+
+            grid.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectCategory(btn.dataset.category));
+            });
+        }
+
+        function selectCategory(categoryId) {
+            state.selectedCategory = categoryId;
+            renderCategories();
+        }
+
+        function selectSeverity(severity) {
+            state.selectedSeverity = severity;
+            document.querySelectorAll('.severity-btn').forEach(btn => {
+                if (btn.dataset.severity === severity) {
+                    btn.classList.add('selected', 'bg-white/30');
+                } else {
+                    btn.classList.remove('selected', 'bg-white/30');
+                }
+            });
+        }
+
+        function generateExcuse() {
+            if (!state.selectedCategory) {
+                alert('Seleziona prima una categoria!');
+                return;
+            }
+
+            const category = CATEGORIES.find(c => c.id === state.selectedCategory);
+            const excuseList = EXCUSES[state.selectedCategory][state.selectedSeverity];
+
+            if (!excuseList || excuseList.length === 0) {
+                // Fallback to 'media' if severity not available
+                const fallbackList = EXCUSES[state.selectedCategory]['media'];
+                var excuse = randomFrom(fallbackList);
+            } else {
+                var excuse = randomFrom(excuseList);
+            }
+
+            // Show result
+            document.getElementById('result-container').classList.remove('hidden');
+
+            // Category badge
+            document.getElementById('result-category-badge').innerHTML = `${category.emoji} ${category.name}`;
+
+            // Severity badge
+            const severityEmojis = { lieve: '😅', media: '😬', grave: '😰', catastrofica: '💀' };
+            const severityLabels = { lieve: 'Lieve', media: 'Media', grave: 'Grave', catastrofica: 'Catastrofica' };
+            document.getElementById('result-severity-badge').innerHTML = `${severityEmojis[state.selectedSeverity]} ${severityLabels[state.selectedSeverity]}`;
+
+            // Excuse text
+            document.getElementById('excuse-text').textContent = `"${excuse.text}"`;
+
+            // Stats
+            setTimeout(() => {
+                document.getElementById('credibility-value').textContent = excuse.credibility + '%';
+                document.getElementById('credibility-bar').style.width = excuse.credibility + '%';
+                document.getElementById('risk-value').textContent = excuse.risk + '%';
+                document.getElementById('risk-bar').style.width = excuse.risk + '%';
+            }, 100);
+
+            // Tips
+            document.getElementById('tip-text').textContent = excuse.tip;
+            document.getElementById('pro-move-text').textContent = excuse.proMove;
+
+            // Update stats
+            state.excusesGenerated++;
+            document.getElementById('excuses-generated').textContent = state.excusesGenerated;
+
+            // Add to history
+            state.history.unshift({
+                text: excuse.text,
+                category: category.name,
+                emoji: category.emoji,
+                date: new Date().toISOString()
+            });
+            if (state.history.length > 10) state.history.pop();
+
+            saveState();
+            renderHistory();
+
+            // Confetti!
+            createConfetti();
+
+            // Scroll to result
+            document.getElementById('result-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderPopular() {
+            const list = document.getElementById('popular-list');
+            list.innerHTML = POPULAR_EXCUSES.map(excuse => `
+                <div class="flex items-center justify-between p-3 glass rounded-xl">
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-medium">"${excuse.text}"</p>
+                        <p class="text-white/50 text-xs">${excuse.category}</p>
+                    </div>
+                    <span class="text-white/50 text-xs">${excuse.uses} usi</span>
+                </div>
+            `).join('');
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+
+            if (state.history.length === 0) {
+                list.innerHTML = '<p class="text-white/50 text-sm text-center py-4">Nessuna scusa ancora. Sei una persona onesta? 🤔</p>';
+                return;
+            }
+
+            list.innerHTML = state.history.map(entry => `
+                <div class="flex items-center gap-3 p-3 glass rounded-xl">
+                    <span class="text-2xl">${entry.emoji}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm truncate">"${entry.text}"</p>
+                        <p class="text-white/50 text-xs">${entry.category}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== EVENT HANDLERS ====================
+        function setupEventListeners() {
+            // Severity selector
+            document.querySelectorAll('.severity-btn').forEach(btn => {
+                btn.addEventListener('click', () => selectSeverity(btn.dataset.severity));
+            });
+
+            // Generate button
+            document.getElementById('generate-btn').addEventListener('click', generateExcuse);
+
+            // Another button
+            document.getElementById('another-btn').addEventListener('click', generateExcuse);
+
+            // Copy button
+            document.getElementById('copy-btn').addEventListener('click', () => {
+                const text = document.getElementById('excuse-text').textContent.replace(/"/g, '');
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('copy-btn');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copiato!';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-copy"></i> Copia';
+                    }, 2000);
+                });
+            });
+
+            // Share button
+            document.getElementById('share-btn').addEventListener('click', () => {
+                const excuse = document.getElementById('excuse-text').textContent;
+                const text = `🏭 Scusificio Italiano\n\n${excuse}\n\nLa scusa perfetta per ogni occasione!`;
+
+                if (navigator.share) {
+                    navigator.share({ text });
+                } else {
+                    navigator.clipboard.writeText(text).then(() => {
+                        alert('Copiato negli appunti!');
+                    });
+                }
+            });
+
+            // Clear history
+            document.getElementById('clear-history').addEventListener('click', () => {
+                if (confirm('Cancellare lo storico delle scuse?')) {
+                    state.history = [];
+                    saveState();
+                    renderHistory();
+                }
+            });
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            loadState();
+            renderCategories();
+            renderPopular();
+            renderHistory();
+            setupEventListeners();
+            document.getElementById('excuses-generated').textContent = state.excusesGenerated;
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
