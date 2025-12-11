@@ -143,34 +143,48 @@
                 <!-- Categories rendered here -->
             </div>
 
-            <!-- Severity Selector -->
-            <div class="mt-6">
-                <label class="block text-white/80 text-sm mb-3 text-center">
-                    <i class="fas fa-thermometer-half mr-1"></i>
-                    Quanto è grave la situazione?
-                </label>
-                <div class="flex justify-center gap-2 flex-wrap" id="severity-selector">
-                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20" data-severity="lieve">
-                        😅 Lieve
-                    </button>
-                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20 selected bg-white/30" data-severity="media">
-                        😬 Media
-                    </button>
-                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20" data-severity="grave">
-                        😰 Grave
-                    </button>
-                    <button class="severity-btn glass px-4 py-2 rounded-full text-sm transition-all hover:bg-white/20" data-severity="catastrofica">
-                        💀 Catastrofica
-                    </button>
-                </div>
+        </div>
+
+        <!-- Severity Selector (Step 2) -->
+        <div id="severity-container" class="glass rounded-3xl p-6 md:p-8 mb-8 hidden pop">
+            <h2 class="text-xl font-bold text-center mb-6">
+                <i class="fas fa-thermometer-half mr-2"></i>
+                Quanto è grave la situazione?
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" id="severity-selector">
+                <button class="severity-btn glass rounded-xl p-4 text-center transition-all hover:bg-white/20 hover:scale-105" data-severity="lieve">
+                    <div class="text-3xl mb-2">😅</div>
+                    <div class="text-sm font-medium">Lieve</div>
+                    <div class="text-xs text-white/60 mt-1">Scuse quotidiane</div>
+                </button>
+                <button class="severity-btn glass rounded-xl p-4 text-center transition-all hover:bg-white/20 hover:scale-105" data-severity="media">
+                    <div class="text-3xl mb-2">😬</div>
+                    <div class="text-sm font-medium">Media</div>
+                    <div class="text-xs text-white/60 mt-1">Rischio moderato</div>
+                </button>
+                <button class="severity-btn glass rounded-xl p-4 text-center transition-all hover:bg-white/20 hover:scale-105" data-severity="grave">
+                    <div class="text-3xl mb-2">😰</div>
+                    <div class="text-sm font-medium">Grave</div>
+                    <div class="text-xs text-white/60 mt-1">Emergenze inventate</div>
+                </button>
+                <button class="severity-btn glass rounded-xl p-4 text-center transition-all hover:bg-white/20 hover:scale-105" data-severity="catastrofica">
+                    <div class="text-3xl mb-2">💀</div>
+                    <div class="text-sm font-medium">Catastrofica</div>
+                    <div class="text-xs text-white/60 mt-1">Karma pericoloso</div>
+                </button>
             </div>
 
             <!-- Generate Button -->
-            <div class="text-center mt-8">
-                <button id="generate-btn" class="bg-white text-purple-600 font-bold py-4 px-12 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg text-lg disabled:opacity-50">
+            <div class="text-center mt-6">
+                <button id="generate-btn" class="bg-white text-purple-600 font-bold py-4 px-12 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg text-lg disabled:opacity-50 disabled:cursor-not-allowed">
                     <i class="fas fa-magic mr-2"></i>
                     GENERA SCUSA
                 </button>
+                <p id="severity-hint" class="text-white/60 text-sm mt-3">
+                    <i class="fas fa-hand-pointer mr-1"></i>
+                    Seleziona prima il livello di gravità
+                </p>
             </div>
         </div>
 
@@ -623,7 +637,7 @@
         // ==================== STATE ====================
         let state = {
             selectedCategory: null,
-            selectedSeverity: 'media',
+            selectedSeverity: null,
             excusesGenerated: 0,
             history: []
         };
@@ -680,23 +694,54 @@
 
         function selectCategory(categoryId) {
             state.selectedCategory = categoryId;
+            state.selectedSeverity = null; // Reset severity when changing category
             renderCategories();
+
+            // Show severity container with animation
+            const severityContainer = document.getElementById('severity-container');
+            severityContainer.classList.remove('hidden');
+
+            // Reset severity buttons
+            document.querySelectorAll('.severity-btn').forEach(btn => {
+                btn.classList.remove('selected', 'bg-white/30', 'ring-2', 'ring-white');
+            });
+
+            // Update generate button state
+            updateGenerateButton();
+
+            // Scroll to severity selector
+            setTimeout(() => {
+                severityContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
         function selectSeverity(severity) {
             state.selectedSeverity = severity;
             document.querySelectorAll('.severity-btn').forEach(btn => {
                 if (btn.dataset.severity === severity) {
-                    btn.classList.add('selected', 'bg-white/30');
+                    btn.classList.add('selected', 'bg-white/30', 'ring-2', 'ring-white');
                 } else {
-                    btn.classList.remove('selected', 'bg-white/30');
+                    btn.classList.remove('selected', 'bg-white/30', 'ring-2', 'ring-white');
                 }
             });
+            updateGenerateButton();
+        }
+
+        function updateGenerateButton() {
+            const btn = document.getElementById('generate-btn');
+            const hint = document.getElementById('severity-hint');
+
+            if (state.selectedSeverity) {
+                btn.disabled = false;
+                hint.classList.add('hidden');
+            } else {
+                btn.disabled = true;
+                hint.classList.remove('hidden');
+            }
         }
 
         function generateExcuse() {
-            if (!state.selectedCategory) {
-                alert('Seleziona prima una categoria!');
+            if (!state.selectedCategory || !state.selectedSeverity) {
                 return;
             }
 
