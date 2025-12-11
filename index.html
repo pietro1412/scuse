@@ -309,8 +309,15 @@
             { id: 'lavoro', name: 'Assenza lavoro', emoji: '💼', color: 'from-blue-500 to-indigo-500' },
             { id: 'palestra', name: 'Niente palestra', emoji: '🏋️', color: 'from-yellow-500 to-orange-500' },
             { id: 'famiglia', name: 'Cena famiglia', emoji: '👨‍👩‍👧', color: 'from-pink-500 to-rose-500' },
-            { id: 'compiti', name: 'Compiti/Studio', emoji: '📚', color: 'from-cyan-500 to-blue-500' },
-            { id: 'appuntamento', name: 'Disdire appuntamento', emoji: '📅', color: 'from-violet-500 to-purple-500' }
+            { id: 'appuntamento', name: 'Disdire appuntamento', emoji: '📅', color: 'from-violet-500 to-purple-500' },
+            { id: 'figli', name: 'Figli/Scuola', emoji: '👶', color: 'from-amber-500 to-yellow-500' },
+            { id: 'mutuo', name: 'Pagamenti/Bollette', emoji: '💸', color: 'from-emerald-500 to-green-500' },
+            { id: 'suoceri', name: 'Suoceri', emoji: '😅', color: 'from-rose-500 to-red-500' },
+            { id: 'sesso', name: 'Intimità partner', emoji: '🛏️', color: 'from-fuchsia-500 to-pink-500' },
+            { id: 'riunione', name: 'Riunione/Call', emoji: '💻', color: 'from-slate-500 to-gray-500' },
+            { id: 'dieta', name: 'Sgarrare dieta', emoji: '🍕', color: 'from-orange-500 to-red-500' },
+            { id: 'hobby', name: 'Tempo per hobby', emoji: '🎮', color: 'from-indigo-500 to-purple-500' },
+            { id: 'amici', name: 'Uscita con amici', emoji: '🍻', color: 'from-amber-500 to-orange-500' }
         ];
 
         const EXCUSES = {
@@ -430,25 +437,6 @@
                     { text: "Ho un problema personale serio di cui non voglio parlare", credibility: 60, risk: 60, tip: "Alta tensione emotiva, usala rarissimamente", proMove: "Preparati alle chiamate preoccupate" }
                 ]
             },
-            compiti: {
-                lieve: [
-                    { text: "Il computer si è spento e ho perso tutto il lavoro", credibility: 70, risk: 35, tip: "Classica ma sempre valida", proMove: "Lamentati del 'backup che non ha funzionato'" },
-                    { text: "Ho avuto problemi con internet tutto il giorno", credibility: 75, risk: 30, tip: "Verificabile teoricamente, ma chi lo fa?", proMove: "Scrivi al prof/capo dalla connessione 'finalmente tornata'" },
-                    { text: "Non avevo capito la consegna, posso avere una proroga?", credibility: 80, risk: 25, tip: "L'onestà parziale funziona", proMove: "Fai una domanda specifica per sembrare confuso/a davvero" }
-                ],
-                media: [
-                    { text: "Il file si è corrotto, non riesco più ad aprirlo", credibility: 60, risk: 45, tip: "Funziona una volta sola", proMove: "Manda un file corrotto come 'prova' (facile da creare)" },
-                    { text: "Sono stato male tutta la settimana, non sono riuscito a concentrarmi", credibility: 65, risk: 40, tip: "Vago ma empatico", proMove: "Sembri leggermente provato/a" },
-                    { text: "Ho avuto un lutto in famiglia, ero fuori città", credibility: 50, risk: 60, tip: "Karma pericoloso, usa con estrema cautela", proMove: "MAI inventare lutti, seriamente" }
-                ],
-                grave: [
-                    { text: "Ho avuto un attacco di ansia e non riuscivo a lavorare", credibility: 75, risk: 35, tip: "Sempre più accettata come scusa", proMove: "Parla di quanto prendi sul serio il lavoro 'forse troppo'" },
-                    { text: "Il mio coinquilino ha cancellato tutto per sbaglio", credibility: 45, risk: 65, tip: "Incredibile ma tecnicamente possibile", proMove: "Sembrare arrabbiato/a col coinquilino aiuta" }
-                ],
-                catastrofica: [
-                    { text: "Ho avuto un blocco creativo totale, preferisco consegnare qualcosa di qualità in ritardo", credibility: 70, risk: 50, tip: "Audace ma rispettata se poi consegni bene", proMove: "Poi consegna davvero qualcosa di decente" }
-                ]
-            },
             appuntamento: {
                 lieve: [
                     { text: "Mi è venuto qualcosa, possiamo spostare?", credibility: 85, risk: 20, tip: "Vago e gentile", proMove: "Proponi una nuova data immediatamente" },
@@ -467,15 +455,169 @@
                 catastrofica: [
                     { text: "Ho avuto un'emergenza personale seria, ti prego di capire", credibility: 65, risk: 55, tip: "Da usare solo in casi veri o quasi-veri", proMove: "Non dare dettagli, il mistero protegge" }
                 ]
+            },
+            figli: {
+                lieve: [
+                    { text: "Il bambino ha la febbre, devo stare a casa con lui", credibility: 95, risk: 10, tip: "Scusa quasi inattaccabile, i figli vincono sempre", proMove: "Manda una foto del termometro (anche vecchia)" },
+                    { text: "Devo andare a prenderlo a scuola prima, c'è un problema", credibility: 90, risk: 15, tip: "Vago ma urgente", proMove: "Fai la faccia preoccupata mentre esci" },
+                    { text: "Ha la recita/partita/saggio e non posso mancare", credibility: 85, risk: 20, tip: "I genitori presenti sono apprezzati", proMove: "Posta foto dell'evento sui social" }
+                ],
+                media: [
+                    { text: "C'è stato un incidente a scuola, mi hanno chiamato", credibility: 75, risk: 35, tip: "Non esagerare con la gravità", proMove: "Al ritorno spiega che era solo una botta" },
+                    { text: "Mio figlio ha i pidocchi, devo trattarlo e pulire casa", credibility: 80, risk: 25, tip: "Nessuno vuole approfondire", proMove: "Lamentati del costo dei prodotti antipidocchi" },
+                    { text: "C'è riunione con gli insegnanti, è urgente", credibility: 70, risk: 40, tip: "Verificabile, ma chi chiama la scuola?", proMove: "Torna con aria preoccupata per i voti" }
+                ],
+                grave: [
+                    { text: "Mio figlio è stato sospeso, devo andare a parlare col preside", credibility: 65, risk: 50, tip: "Drammatico ma credibile con adolescenti", proMove: "Sembrare tra l'arrabbiato e il preoccupato" },
+                    { text: "C'è un problema serio a scuola, preferisco non parlarne", credibility: 70, risk: 45, tip: "Il mistero protegge", proMove: "Tutti rispetteranno la privacy" }
+                ],
+                catastrofica: [
+                    { text: "Mio figlio ha avuto un incidente, siamo al pronto soccorso", credibility: 60, risk: 65, tip: "Karma pericoloso, usa solo se necessario", proMove: "MAI inventare incidenti ai figli, seriamente" }
+                ]
+            },
+            mutuo: {
+                lieve: [
+                    { text: "Devo aspettare la banca, c'è un problema con un bonifico", credibility: 85, risk: 20, tip: "Le banche sono sempre in ritardo", proMove: "Lamentati delle file in banca" },
+                    { text: "Sto aspettando un rimborso importante, devo chiamare l'assistenza", credibility: 80, risk: 25, tip: "Tutti odiano i call center", proMove: "Aggiungi '40 minuti di attesa'" },
+                    { text: "Devo passare in posta per una raccomandata urgente", credibility: 75, risk: 30, tip: "Le raccomandate sono sempre urgenti", proMove: "Lamentati delle file infinite" }
+                ],
+                media: [
+                    { text: "Mi hanno bloccato la carta, devo andare in filiale di persona", credibility: 70, risk: 35, tip: "Succede più spesso di quanto si pensi", proMove: "Sembrare stressato per i soldi bloccati" },
+                    { text: "C'è un errore nella bolletta, devo risolvere prima che stacchino tutto", credibility: 65, risk: 45, tip: "L'urgenza delle utenze è reale", proMove: "Mostra indignazione per l'errore" },
+                    { text: "Il commercialista ha bisogno di documenti urgentissimi", credibility: 75, risk: 35, tip: "Funziona specialmente verso fine mese/anno", proMove: "Parla di scadenze fiscali imminenti" }
+                ],
+                grave: [
+                    { text: "Ho un problema con il mutuo, devo parlare con la banca oggi", credibility: 70, risk: 45, tip: "I problemi di mutuo sono seri", proMove: "Sembrare preoccupato per le finanze" },
+                    { text: "Mi stanno per pignorare qualcosa, devo sistemare subito", credibility: 55, risk: 60, tip: "Drammatico ma ti lasceranno in pace", proMove: "Non dare dettagli, è imbarazzante" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto un problema finanziario serio, preferirei non parlarne", credibility: 60, risk: 55, tip: "Nessuno vuole approfondire i problemi di soldi", proMove: "L'imbarazzo finanziario è una protezione" }
+                ]
+            },
+            suoceri: {
+                lieve: [
+                    { text: "I suoceri vengono a cena, devo preparare tutto", credibility: 90, risk: 15, tip: "Tutti capiscono lo stress da suoceri", proMove: "Aggiungi 'devo pulire casa da cima a fondo'" },
+                    { text: "Devo accompagnare mia suocera dal dottore", credibility: 85, risk: 20, tip: "Premuroso e necessario", proMove: "Fai sembrare che sia un obbligo non negoziabile" },
+                    { text: "Mio suocero ha bisogno di aiuto col computer", credibility: 80, risk: 25, tip: "I suoceri e la tecnologia sono un classico", proMove: "Lamentati di quanto ci vuole a spiegare" }
+                ],
+                media: [
+                    { text: "I suoceri stanno litigando, mia moglie/mio marito vuole che vada a mediare", credibility: 65, risk: 45, tip: "Drama familiare sempre credibile", proMove: "Sembrare esausto dalla situazione" },
+                    { text: "Mia suocera non sta bene, dobbiamo andare a trovarla", credibility: 75, risk: 35, tip: "La salute degli anziani è prioritaria", proMove: "Fai sembrare che sia più grave di quello che è" },
+                    { text: "I suoceri hanno deciso di venire oggi senza avvisare", credibility: 70, risk: 40, tip: "I suoceri a sorpresa sono un incubo noto", proMove: "Messaggia 'SOS SUOCERI' a qualche amico per credibilità" }
+                ],
+                grave: [
+                    { text: "C'è stato un problema serio coi suoceri, non posso entrare nei dettagli", credibility: 65, risk: 50, tip: "Il mistero familiare è rispettato", proMove: "Sembrare teso e stressato" },
+                    { text: "Mia suocera mi ha fatto una scenata, devo gestire la crisi familiare", credibility: 60, risk: 55, tip: "Drama con suocera è un classico", proMove: "Fai capire che è colpa sua senza dirlo" }
+                ],
+                catastrofica: [
+                    { text: "I suoceri minacciano di trasferirsi da noi, devo trovare una soluzione", credibility: 70, risk: 45, tip: "L'orrore dei suoceri conviventi è universale", proMove: "Tutti ti compatranno" }
+                ]
+            },
+            sesso: {
+                lieve: [
+                    { text: "Amore, ho un mal di testa terribile stasera", credibility: 85, risk: 20, tip: "Il classico immortale", proMove: "Prendi davvero un'aspirina per credibilità" },
+                    { text: "Sono troppo stanco/a, è stata una giornata pesantissima", credibility: 90, risk: 15, tip: "La stanchezza da lavoro/figli è reale", proMove: "Addormentati sul divano prima di andare a letto" },
+                    { text: "Ho mangiato troppo, mi sento un pallone", credibility: 80, risk: 25, tip: "Dopo cene abbondanti funziona sempre", proMove: "Lamentati della digestione" }
+                ],
+                media: [
+                    { text: "Ho le mie cose / Ho un fastidio lì sotto", credibility: 95, risk: 5, tip: "Scusa quasi invalicabile", proMove: "Nessuno approfondisce mai" },
+                    { text: "Sono stressato/a per il lavoro, non riesco a rilassarmi", credibility: 75, risk: 30, tip: "Lo stress uccide la libido, è noto", proMove: "Parla di quanto sei preoccupato/a per X" },
+                    { text: "Non mi sento bene emotivamente, ho bisogno di coccole e basta", credibility: 70, risk: 35, tip: "Vulnerabile ma efficace", proMove: "Proponi film e abbracci come alternativa" }
+                ],
+                grave: [
+                    { text: "Ultimamente non mi sento a mio agio col mio corpo", credibility: 75, risk: 40, tip: "Tema delicato che viene rispettato", proMove: "Apri una conversazione più profonda" },
+                    { text: "Sto attraversando un periodo strano, non è colpa tua", credibility: 70, risk: 45, tip: "Vago ma disarmante", proMove: "Rassicura il partner che non c'entra lui/lei" }
+                ],
+                catastrofica: [
+                    { text: "Penso che dovremmo parlare della nostra intimità...", credibility: 80, risk: 50, tip: "Ribalta la situazione, diventa una Conversazione Seria", proMove: "Trasforma la scusa in crescita di coppia" }
+                ]
+            },
+            riunione: {
+                lieve: [
+                    { text: "Ho un'altra call che si è sovrapposta, posso entrare dopo?", credibility: 90, risk: 15, tip: "Il calendario pieno è una medaglia", proMove: "Entra effettivamente 10 minuti dopo" },
+                    { text: "Ho problemi con la connessione, entro quando si stabilizza", credibility: 85, risk: 20, tip: "La connessione instabile è un classico", proMove: "Spegni la webcam 'per risparmiare banda'" },
+                    { text: "Scusate, avevo il microfono mutato tutto il tempo", credibility: 95, risk: 10, tip: "Succede davvero a tutti", proMove: "Ripeti velocemente quello che 'avevi detto'" }
+                ],
+                media: [
+                    { text: "Devo uscire prima, ho un impegno improrogabile", credibility: 75, risk: 35, tip: "Metti già un altro meeting nel calendario", proMove: "Esci con aria affaccendata" },
+                    { text: "Il computer si è bloccato, ho perso la prima parte", credibility: 70, risk: 40, tip: "Chiedi un riassunto per sembrare interessato", proMove: "Lamentati di Windows/Mac" },
+                    { text: "Scusa, ero in un'altra stanza per una chiamata urgente", credibility: 65, risk: 45, tip: "Funziona per giustificare assenze temporanee", proMove: "Sembrare leggermente stressato al ritorno" }
+                ],
+                grave: [
+                    { text: "Ho avuto un'emergenza familiare, devo lasciare la call", credibility: 80, risk: 30, tip: "Nessuno questiona le emergenze familiari", proMove: "Esci senza dare troppi dettagli" },
+                    { text: "Non mi sento bene, preferisco spegnere la camera", credibility: 75, risk: 35, tip: "Camera spenta = libertà", proMove: "Intervieni ogni tanto per dimostrare presenza" }
+                ],
+                catastrofica: [
+                    { text: "C'è un'emergenza, devo andare, aggiornatemi via email", credibility: 70, risk: 50, tip: "Exit definitiva da qualsiasi riunione", proMove: "Non rispondere per almeno 2 ore" }
+                ]
+            },
+            dieta: {
+                lieve: [
+                    { text: "Da domani ricomincio, oggi è l'ultima trasgressione", credibility: 90, risk: 10, tip: "Il lunedì infinito delle diete", proMove: "Ripeti ogni domenica sera" },
+                    { text: "Ho bisogno di comfort food, è stata una giornata difficile", credibility: 85, risk: 15, tip: "Il cibo emotivo è riconosciuto", proMove: "Elenca le cose brutte della giornata" },
+                    { text: "È il compleanno di qualcuno, devo mangiare la torta per educazione", credibility: 80, risk: 20, tip: "C'è sempre un compleanno", proMove: "È maleducazione rifiutare" }
+                ],
+                media: [
+                    { text: "Ho fatto sport stamattina, me lo sono guadagnato", credibility: 75, risk: 30, tip: "Funziona se fai davvero un po' di sport", proMove: "Esagera l'intensità dell'allenamento" },
+                    { text: "È un'occasione speciale, non capita tutti i giorni", credibility: 70, risk: 35, tip: "Le occasioni speciali sono frequenti se cerchi", proMove: "Ogni cena fuori è speciale" },
+                    { text: "Ho letto che il digiuno intermittente funziona, quindi posso mangiare di più ora", credibility: 60, risk: 45, tip: "Scienza fai-da-te", proMove: "Cita articoli vaghi che hai 'letto'" }
+                ],
+                grave: [
+                    { text: "La vita è breve, voglio godermela", credibility: 85, risk: 25, tip: "Filosofia esistenziale applicata al cibo", proMove: "Momento carpe diem gastronomico" },
+                    { text: "La bilancia è rotta, non vale", credibility: 50, risk: 55, tip: "Negare l'evidenza", proMove: "Compra una bilancia nuova (poi nascondila)" }
+                ],
+                catastrofica: [
+                    { text: "I carboidrati mi rendono felice, e la felicità è salute", credibility: 70, risk: 40, tip: "La salute mentale conta", proMove: "Tutto è collegato alla salute mentale" }
+                ]
+            },
+            hobby: {
+                lieve: [
+                    { text: "Sono stanco/a morto/a, stasera proprio non ce la faccio", credibility: 90, risk: 15, tip: "La stanchezza del 40enne è reale", proMove: "Sbadigliare vistosamente" },
+                    { text: "Devo finire un lavoro urgente, magari domani", credibility: 85, risk: 20, tip: "Il lavoro viene prima", proMove: "Guarda lo schermo con aria stressata" },
+                    { text: "I bambini non mi lasciano un attimo libero", credibility: 80, risk: 25, tip: "Scusa genitoriale inattaccabile", proMove: "Elenca le attività dei figli" }
+                ],
+                media: [
+                    { text: "La casa è un disastro, devo sistemare prima di fare altro", credibility: 75, risk: 30, tip: "Le responsabilità adulte", proMove: "Fai una foto del caos (anche di ieri)" },
+                    { text: "Mia moglie/mio marito vuole che passiamo del tempo insieme", credibility: 70, risk: 35, tip: "La vita di coppia richiede sacrifici", proMove: "Partner > hobby (almeno a parole)" },
+                    { text: "Non ho più l'energia di una volta per queste cose", credibility: 65, risk: 40, tip: "Ammissione triste ma onesta", proMove: "Sigh nostalgico del passato" }
+                ],
+                grave: [
+                    { text: "Ho dovuto vendere l'attrezzatura per pagare le bollette", credibility: 55, risk: 55, tip: "Drammatico ma comprensibile", proMove: "Non entrare nei dettagli finanziari" },
+                    { text: "Il medico mi ha detto di ridurre lo stress, e questo mi stressava", credibility: 60, risk: 50, tip: "La salute prima di tutto", proMove: "Parla di pressione alta o altro" }
+                ],
+                catastrofica: [
+                    { text: "Mi sono reso conto che non mi piace più come prima", credibility: 70, risk: 45, tip: "Crisi esistenziale degli hobby", proMove: "È una fase (o forse no)" }
+                ]
+            },
+            amici: {
+                lieve: [
+                    { text: "Ho la babysitter che deve andare via presto", credibility: 90, risk: 15, tip: "Le babysitter costano e hanno orari", proMove: "Mostra che ti dispiace davvero" },
+                    { text: "Domani mi sveglio prestissimo, devo andare", credibility: 85, risk: 20, tip: "La responsabilità adulta", proMove: "Parla della riunione delle 8" },
+                    { text: "Il partner mi aspetta, avevamo dei piani", credibility: 80, risk: 25, tip: "La vita di coppia ha la priorità", proMove: "Scusati sinceramente" }
+                ],
+                media: [
+                    { text: "I bambini sono ammalati, non posso lasciarli", credibility: 85, risk: 20, tip: "Figli malati = carta vincente", proMove: "Proponi di recuperare presto" },
+                    { text: "Sto risparmiando, questo mese è tosto", credibility: 70, risk: 35, tip: "Le finanze del 40enne sono un campo minato", proMove: "Proponi un'alternativa economica" },
+                    { text: "Sono in crisi col partner, non sarei buona compagnia", credibility: 65, risk: 45, tip: "Vulnerabile ma rispettata", proMove: "Gli amici veri capiranno" }
+                ],
+                grave: [
+                    { text: "Ho bisogno di stare da solo/a, attraverso un momento difficile", credibility: 75, risk: 40, tip: "La salute mentale del 40enne", proMove: "Prometti di chiamare quando stai meglio" },
+                    { text: "Non me la sento di fingere che vada tutto bene stasera", credibility: 70, risk: 45, tip: "Onestà brutale ma rispettata", proMove: "Apre conversazioni più profonde" }
+                ],
+                catastrofica: [
+                    { text: "Ho avuto una giornata di merda, voglio solo il mio letto", credibility: 80, risk: 30, tip: "Onestà pura", proMove: "Tutti hanno avuto quelle giornate" }
+                ]
             }
         };
 
         const POPULAR_EXCUSES = [
+            { text: "Il bambino ha la febbre", category: "👶 Figli/Scuola", uses: 1247 },
             { text: "Avevo il telefono in silenzioso", category: "📱 Non rispondere", uses: 847 },
             { text: "C'era un traffico assurdo", category: "⏰ Ritardo", uses: 723 },
-            { text: "Ho mal di testa fortissimo", category: "🎉 Evento", uses: 612 },
-            { text: "Ho la schiena bloccata", category: "🏋️ Palestra", uses: 589 },
-            { text: "Ho una deadline di lavoro", category: "👨‍👩‍👧 Famiglia", uses: 456 }
+            { text: "Sono troppo stanco/a stasera", category: "🛏️ Intimità", uses: 698 },
+            { text: "Ho problemi di connessione", category: "💻 Riunione/Call", uses: 621 },
+            { text: "I suoceri vengono a cena", category: "😅 Suoceri", uses: 589 },
+            { text: "Da domani ricomincio la dieta", category: "🍕 Dieta", uses: 512 }
         ];
 
         // ==================== STATE ====================
